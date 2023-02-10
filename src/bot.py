@@ -95,7 +95,9 @@ async def weekly_command(msg: discord.Message):
         if (hasattr(assignment, "html_url")):
             message += f", url: [link]({assignment.html_url})"
         message += "\n"
-    await send_large_message(message, msg.channel)
+    embed = discord.Embed()
+    embed.title = f"Assignments for {msg.author}"
+    await send_large_embed(embed, message, msg.channel)
 
 MAX_SINGLE_MESSAGE_LENGTH = 1500
 async def send_large_message(string: str, channel: discord.PartialMessageable):
@@ -120,6 +122,29 @@ async def send_large_message(string: str, channel: discord.PartialMessageable):
     for message in message_queue:
         await message
     print("SEND LARGE MESSAGE: finished message")
+
+async def send_large_embed(embed: discord.Embed, string: str, channel: discord.PartialMessageable):
+    """
+    Split an imbed into discord consumable parts
+
+    :param string: The message to send in string format
+    :param channel: The channel to send the message through
+    """
+    if (len(string) < MAX_SINGLE_MESSAGE_LENGTH):
+        await channel.send(embed=embed)
+        return
+    parts = ceil(len(string) / MAX_SINGLE_MESSAGE_LENGTH)
+
+    split_string = string.splitlines()
+    split_count = floor(len(split_string) / parts)
+
+    message_queue = []
+    for part in range(parts):
+        embed.description = await handle_message_part(split_string, split_count * part, split_count * (part + 1))
+        message_queue.append ( channel.send(embed=embed) )
+    for message in message_queue:
+        await message
+    print("SEND LARGE EMBED: finished message")
 
 async def handle_message_part(split_string: list[str], start_index: int, end_index: int) -> str:
     string_part = "\n".join( split_string[ start_index : end_index ] )
