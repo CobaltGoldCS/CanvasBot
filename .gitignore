@@ -3,3 +3,5 @@
 /Scripts
 /.vscode
 /src/__pycache__
+/bin
+.env
