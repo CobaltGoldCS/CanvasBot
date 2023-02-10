@@ -90,7 +90,8 @@ async def weekly_command(msg: discord.Message):
     for assignment in assignments:
         message += assignment.name
         if (hasattr(assignment, "due_at_date")):
-            message += f", due at {assignment.due_at_date.astimezone(timezone.utc)}"
+            time = int(assignment.due_at_date.timestamp())
+            message += f", due in <t:{time}:R>"
         if (hasattr(assignment, "html_url")):
             message += f", url: {assignment.html_url}"
         message += "\n"
