@@ -93,7 +93,7 @@ async def weekly_command(msg: discord.Message):
             time = int(assignment.due_at_date.timestamp())
             message += f", due in <t:{time}:R>"
         if (hasattr(assignment, "html_url")):
-            message += f", url: {assignment.html_url}"
+            message += f", url: [link]({assignment.html_url})"
         message += "\n"
     await send_large_message(message, msg.channel)
 
