@@ -138,12 +138,11 @@ async def send_large_embed(embed: discord.Embed, string: str, channel: discord.P
     split_string = string.splitlines()
     split_count = floor(len(split_string) / parts)
 
-    message_queue = []
+    title = embed.title
     for part in range(parts):
+        embed.title = f"{title} ({part + 1}/{parts})"
         embed.description = await handle_message_part(split_string, split_count * part, split_count * (part + 1))
-        message_queue.append ( channel.send(embed=embed) )
-    for message in message_queue:
-        await message
+        await channel.send(embed=embed)
     print("SEND LARGE EMBED: finished message")
 
 async def handle_message_part(split_string: list[str], start_index: int, end_index: int) -> str:
